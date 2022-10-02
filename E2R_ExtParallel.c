@@ -82,10 +82,8 @@ void E2RExt_WriteByte(T_ADDR tAddr, uint8_t byte)
 	CS_DIS();
 }
 
-uint8_t E2RExt_WritePage(T_ADDR tAddr/*, uint8_t *u8pData*/, uint8_t u8Size)
+uint8_t E2RExt_WritePage(T_ADDR tAddr, const uint8_t *u8pData, uint8_t u8Size)
 {
-	uint16_t base = tAddr.value & 0xFFC0;
-
 	//Set Address
 //	PORTB= tAddr.HB;
 
@@ -96,10 +94,10 @@ uint8_t E2RExt_WritePage(T_ADDR tAddr/*, uint8_t *u8pData*/, uint8_t u8Size)
 	{
 		//Set Address
 	//	PORTA= (tAddr.LB & 0xC0) + offset;
-		printf("0x%04X+%02X\r\n",base,offset);
+		printf("0x%02X%02X+%02X=%02X\r\n",tAddr.HB,tAddr.LB&0xC0,offset,*u8pData++);
 
 		//Set Data
-	//	PORTD= bytes[offset];
+	//	PORTD= *u8pData++;
 	
 		//Set Control Lines
 	//	RD_DIS();	//125ns
@@ -110,7 +108,7 @@ uint8_t E2RExt_WritePage(T_ADDR tAddr/*, uint8_t *u8pData*/, uint8_t u8Size)
 		//tWP (min) 100ns
 		//tDS (min) 50ns
 		//Tcy (@32MHz) 125ns
-		NOP();		//125ns
+	//	NOP();		//125ns
 	
 		//Reset Control Lines
 	//	WR_DIS();	//125ns

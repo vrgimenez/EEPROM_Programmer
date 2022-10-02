@@ -41,7 +41,7 @@ extern T_ADDR	tAddress;
 void	E2RExt_Init(void);
 uint8_t	E2RExt_ReadByte(T_ADDR tAddr);
 void	E2RExt_WriteByte(T_ADDR tAddr, uint8_t byte);
-uint8_t	E2RExt_WritePage(T_ADDR tAddr/*, uint8_t *u8pData*/, uint8_t u8Size);
+uint8_t	E2RExt_WritePage(T_ADDR tAddr, const uint8_t *u8pData, uint8_t u8Size);
 void	E2RExt_ReadString (uint16_t u16Address, uint8_t *str);
 void	E2RExt_WriteString(uint16_t u16Address, uint8_t *str);
 

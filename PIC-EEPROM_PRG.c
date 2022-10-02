@@ -43,7 +43,7 @@ void main (void)
 
 	//Initializes External Paged Parallel EEPROM Memory
 	E2RExt_Init();
-	tAddress.value= 60;
+	tAddress.value= 125;
 	data= 0;
 
 	//Infinite Loop
@@ -53,10 +53,9 @@ void main (void)
 		{
 			tBitFlags.RTCTrigger= 0;
 
-			if(!(tRTC.Seconds % 5))
+			if(tRTC.Seconds == 5)
 			{
-				printf("%02u\r\n",E2RExt_WritePage(tAddress,9));
-				tAddress.value+= 0x40;
+				printf("%02u\r\n",E2RExt_WritePage(tAddress,&ROM_BEER19_32K[tAddress.value],10));
 			}
 
 		/*	if(!(tRTC.Seconds % 2))
