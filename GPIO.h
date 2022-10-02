@@ -15,16 +15,16 @@
 #define LED1_DBG_OUT		RC0
 #define LED1_DBG_LAT		LATC0
 
-#define LED1_ON()			LED1_DBG_OUT= 0
-#define LED1_OFF()			LED1_DBG_OUT= 1
+#define LED1_ON()			LED1_DBG_OUT= 1
+#define LED1_OFF()			LED1_DBG_OUT= 0
 #define LED1_TOGGLE()		LED1_DBG_LAT= !LED1_DBG_LAT
 
 #define LED2_DBG_IO			TRISC1
 #define LED2_DBG_OUT		RC1
 #define LED2_DBG_LAT		LATC1
 
-#define LED2_ON()			LED2_DBG_OUT= 0
-#define LED2_OFF()			LED2_DBG_OUT= 1
+#define LED2_ON()			LED2_DBG_OUT= 1
+#define LED2_OFF()			LED2_DBG_OUT= 0
 #define LED2_TOGGLE()		LED2_DBG_LAT= !LED2_DBG_LAT
 
 // Additional IO Macros

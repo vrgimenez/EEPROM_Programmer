@@ -40,7 +40,7 @@ void Console_Init(void)
 	printf("\r\n" PRODUCT_FULL_VERSION_STR);
 	printf("\r\n" LEGAL_TRADEMARKS_STR);
 	printf("\r\nBuild: " __DATE__ ", " __TIME__);
-	printf("\r\nHI-TECH PICC-18 v%u.%u %u\r\n",_HTC_VER_MAJOR_,_HTC_VER_MINOR_,_HTC_VER_PATCH_);
+	printf("\r\nHI-TECH PICC-18 v%u.%u PL%u\r\n",_HTC_VER_MAJOR_,_HTC_VER_MINOR_,_HTC_VER_PATCH_);
 	printf("READY\r\n");
 
 	//Wait text output

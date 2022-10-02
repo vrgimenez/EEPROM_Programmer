@@ -41,10 +41,9 @@ typedef struct {
 	}\
 }
 
-// PIC vs Ports Variants Set Functions Macros
 #define SET_UART_PORTS() {\
-	TRISC6= 0;						/*TX output*/\
-	TRISC7= 1;						/*RX input */\
+	TRISC6= 1;			/*TX_DBG*/\
+	TRISC7= 1;			/*RX_DBG*/\
 }
 
 /*External object declarations----------------------------------------------------------*/
