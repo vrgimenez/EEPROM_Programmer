@@ -5,13 +5,13 @@
  * Created on 6 de septiembre de 2020, 22:58
  */
 
-#ifndef _NVM_DATAMEMORY_H
-#define	_NVM_DATAMEMORY_H
+#ifndef _NVM_INT_H
+#define	_NVM_INT_H
 
 	#if defined _18F4620
-#include "E2R_DataMemory.h"
+#include "E2R_Int.h"
 	#elif defined _16F1579
-#include "HEF_DataMemory.h"
+#include "HEF_Int.h"
 	#endif
 
 /*Type and constant definitions-----------------------------------------------*/
@@ -36,5 +36,5 @@
 
 /*External function declarations----------------------------------------------*/
 
-#endif	/* _NVM_DATAMEMORY_H */
+#endif	/* _NVM_INT_H */
 

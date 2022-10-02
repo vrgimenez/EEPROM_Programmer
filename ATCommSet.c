@@ -14,7 +14,7 @@
 #include <stdint.h>
 
 /*Includes of local headers-------------------------------------------------------------*/
-#include "NVM_DataMemory.h"
+#include "NVM_Int.h"
 #include "PIC-EEPROM_PRG.h"
 #include "ATCommSet.h"
 #include "HW_UART.h"

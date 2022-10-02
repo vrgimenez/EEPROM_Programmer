@@ -1,12 +1,12 @@
 /*
- * File:   E2R_DataMemory.h
+ * File:   E2R_Int.h
  * Author: vrgimenez
  *
  * Created on 2 de septiembre de 2020, 13:11
  */
 
-#ifndef _E2R_DATAMEMORY_H
-#define	_E2R_DATAMEMORY_H
+#ifndef _E2R_INT_H
+#define	_E2R_INT_H
 
 /*Type and constant definitions-----------------------------------------------*/
 
@@ -34,4 +34,4 @@ void E2R_WriteSerialNumber(void);
 void E2R_ReadBitSets(void);
 void E2R_WriteBitSets(void);
 
-#endif	/* _E2R_DATAMEMORY_H */
+#endif	/* _E2R_INT_H */

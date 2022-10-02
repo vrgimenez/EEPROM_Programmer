@@ -27,6 +27,35 @@
 #define LED2_OFF()			LED2_DBG_OUT= 0
 #define LED2_TOGGLE()		LED2_DBG_LAT= !LED2_DBG_LAT
 
+// External Paged Parallel EEPROM Data Bus
+#define DATA_BUS_IO			TRISD
+#define DATA_BUS_OUT		PORTD
+#define DATA_BUS_LAT		LATD
+
+// External Paged Parallel EEPROM Address Bus
+// Low Byte
+#define ADDR_BUS_LO_IO		TRISA
+#define ADDR_BUS_LO_OUT		PORTA
+#define ADDR_BUS_LO_LAT		LATA
+// High Byte
+#define ADDR_BUS_HI_IO		TRISB
+#define ADDR_BUS_HI_OUT		PORTB
+#define ADDR_BUS_HI_LAT		LATB
+
+// External Paged Parallel EEPROM Control Lines
+// Chip Select (Chip Enable)
+#define CTRL_CS_IO			TRISC2
+#define CTRL_CS_OUT			RC2
+#define CTRL_CS_LAT			LATC2
+// Read (Output Enable)
+#define CTRL_RD_IO			TRISC4
+#define CTRL_RD_OUT			RC4
+#define CTRL_RD_LAT			LATC4
+// Write (Write Enable)
+#define CTRL_WR_IO			TRISC5
+#define CTRL_WR_OUT			RC5
+#define CTRL_WR_LAT			LATC5
+
 // Additional IO Macros
 #define CLEAR_ANALOG_INPUTS() {\
 	ADCON1bits.PCFG= 0b1111;	/*A/D Port Configuration Control bits (all digital)*/\
@@ -37,36 +66,27 @@
 	PORTC= 0;\
 	PORTD= 0;\
 	PORTE= 0;\
-	LATA= 0;\
-	LATB= 0;\
-	LATC= 0;\
-	LATD= 0;\
-	LATE= 0;\
 }
 #define SET_OUTPUTS() { /*Unused pins set as Outputs*/\
 	/*PORTA IO Pins*/\
-	TRISA= 0;\
+	ADDR_BUS_LO_IO= 0x00; /*TRISA= 0x00;*/\
 	/*PORTB IO Pins*/\
-	TRISB= 0;\
+	ADDR_BUS_HI_IO= 0x00; /*TRISB= 0x00;*/\
 	/*PORTC IO Pins*/\
 	LED1_DBG_IO= 0; /*TRISC0= 0;*/\
 	LED2_DBG_IO= 0; /*TRISC1= 0;*/\
-	TRISC2= 0;\
+	CTRL_CS_IO= 0;  /*TRISC2= 0;*/\
 	TRISC3= 0;\
-	TRISC4= 0;\
-	TRISC5= 0;\
+	CTRL_RD_IO= 0;  /*TRISC4= 0;*/\
+	CTRL_WR_IO= 0;  /*TRISC5= 0;*/\
 /*	TRISC6= 0; TX_DBG*/\
 /*	TRISC7= 0; RX_DBG*/\
 	/*PORTD IO Pins*/\
-	TRISD= 0;\
+	DATA_BUS_IO= 0x00; /*TRISD= 0x00;*/\
 	/*PORTE IO Pins*/\
 	TRISE= 0;\
 }
 #define SET_INPUTS() {\
-	PANIC_BTN_IN_IO= 1;\
-	REAR_PAX_IN_IO= 1;\
-	FRONT_PAX_IN_IO= 1;\
-	ODOMETER_IN_IO= 1;\
 }
 
 /*External object declarations----------------------------------------------------------*/

@@ -6,9 +6,10 @@
 /*Includes of local headers---------------------------------------------------------------*/
 #include "PIC-EEPROM_PRG.h"
 #include "HW_UART.h"
-#include "NVM_DataMemory.h"
+#include "NVM_Int.h"
 #include "ATCommSet.h"
 #include "GPIO.h"
+#include "E2R_ExtParallel.h"
 #include "version.h"
 
 /*Type and constant definitions-----------------------------------------------------------*/
@@ -38,12 +39,20 @@ void main (void)
 	//Initializes Serial Debug Console
 	Console_Init();
 
+	//Initializes External Paged Parallel EEPROM Memory
+	E2RExt_Init();
+	tAddress.value= 0;
+
 	//Infinite Loop
 	while(1)
 	{
 		if(tBitFlags.RTCTrigger)
 		{
 			tBitFlags.RTCTrigger= 0;
+
+			printf("%04X=%02X\r\n",tAddress.value,E2RExt_ReadByte(tAddress));
+			if(++tAddress.value >= E2REXT_SIZE)
+				tAddress.value= 0;
 
 			if(++tRTC.Seconds == 60)
 			{
@@ -114,9 +123,9 @@ void APP_Init(void)
 	//Configure I/O Ports (I/O pins set as input on POR/BOR)
 	CLEAR_ANALOG_INPUTS();
 //	SET_ANALOG_INPUTS();
+	RESET_PORTS();
 	SET_OUTPUTS();
 //	SET_INPUTS();
-	RESET_PORTS();
 
 	//Enable Interrupts
 	TMR0IE= 1;

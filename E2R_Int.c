@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 /*Includes of local headers-------------------------------------------------------------*/
-#include "E2R_DataMemory.h"
+#include "E2R_Int.h"
 #include "PIC-EEPROM_PRG.h"
 
 /*Type and constant definitions---------------------------------------------------------*/
