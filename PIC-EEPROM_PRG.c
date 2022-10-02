@@ -29,6 +29,7 @@ T_BIT_SET	tBitSet;
 T_BIT_FLAGS	tBitFlags;
 T_RTC		tRTC;
 uint8_t		c2ms, c10ms, c100ms, c1000ms;
+uint8_t		data;
 
 /*Functions-------------------------------------------------------------------------------*/
 void main (void)
@@ -42,6 +43,7 @@ void main (void)
 	//Initializes External Paged Parallel EEPROM Memory
 	E2RExt_Init();
 	tAddress.value= 0;
+	data= 0;
 
 	//Infinite Loop
 	while(1)
@@ -50,9 +52,36 @@ void main (void)
 		{
 			tBitFlags.RTCTrigger= 0;
 
-			printf("%04X=%02X\r\n",tAddress.value,E2RExt_ReadByte(tAddress));
-			if(++tAddress.value >= E2REXT_SIZE)
-				tAddress.value= 0;
+		/*	if(!(tRTC.Seconds % 2))
+			{
+				E2RExt_WriteByte(tAddress,data);
+				printf("%04X=W%02X\r\n",tAddress.value,data);
+
+				//Data Byte Increase Test
+				data++;*/
+
+			/*	//Data Bit Shift Test	
+				data<<=1;
+				if(!data)
+					data= 0x01;*/
+		//	}
+		//	else
+			{
+				printf("%04X=R%02X\r\n",tAddress.value,E2RExt_ReadByte(tAddress));
+
+				if(++tAddress.value >= E2REXT_SIZE)
+					tAddress.value= 0;
+			}
+
+		/*	//Data Bus Test
+			DATA_BUS_IO= 0x00;	//Data Bus (Output)
+			PORTD= 0xFF;		//d0:d7=1
+		*/
+
+		/*	//Address Bus Test
+			DATA_BUS_IO= 0x00;	//Data Bus (Output)
+			PORTD= 0xFF;		//d0:d7=1
+		*/
 
 			if(++tRTC.Seconds == 60)
 			{
