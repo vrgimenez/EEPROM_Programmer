@@ -58,30 +58,28 @@ void main (void)
 				printf("%04X=W%02X\r\n",tAddress.value,data);
 
 				//Data Byte Increase Test
-				data++;*/
+				data++;	*/
 
 			/*	//Data Bit Shift Test	
 				data<<=1;
 				if(!data)
-					data= 0x01;*/
+					data= 0x01;	*/
 		//	}
-		//	else
+		/*	else
 			{
 				printf("%04X=R%02X\r\n",tAddress.value,E2RExt_ReadByte(tAddress));
 
 				if(++tAddress.value >= E2REXT_SIZE)
 					tAddress.value= 0;
-			}
+			}	*/
 
 		/*	//Data Bus Test
 			DATA_BUS_IO= 0x00;	//Data Bus (Output)
-			PORTD= 0xFF;		//d0:d7=1
-		*/
+			PORTD= 0xFF;		//d0:d7=1	*/
 
-		/*	//Address Bus Test
-			DATA_BUS_IO= 0x00;	//Data Bus (Output)
-			PORTD= 0xFF;		//d0:d7=1
-		*/
+			//Address Bus Test
+			PORTA= 0xFF;	//a0:a7=1
+			PORTB= 0x7F;	//a8:a14=1	*/
 
 			if(++tRTC.Seconds == 60)
 			{
