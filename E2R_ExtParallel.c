@@ -30,18 +30,19 @@ uint8_t E2RExt_ReadByte(T_ADDR tAddr)
 	PORTA= tAddr.LB;
 	PORTB= tAddr.HB;
 
+	//Set Data Bus Direction
+	DATA_BUS_IO= 0xFF;	//125ns
+
 	//Set Control Lines
 	WR_DIS();	//125ns
 	CS_ENA();	//125ns
 	RD_ENA();	//125ns
 
-	//tACC (worst case) 350ns
-	//tCE  (worst case) 350ns
-	//tOE  (worst case) 100ns
+	//tACC (worst case) 150ns
+	//tCE  (worst case) 150ns
+	//tOE  (worst case) 70ns
 	//Tcy (@32MHz) 125ns
-
-	//Set Data Bus Direction
-	DATA_BUS_IO= 0xFF;	//125ns
+	NOP();		//125ns
 
 	//Read Data
 	byte= PORTD;
@@ -74,42 +75,50 @@ void E2RExt_WriteByte(T_ADDR tAddr, uint8_t byte)
 	//tWP (min) 100ns
 	//tDS (min) 50ns
 	//Tcy (@32MHz) 125ns
-	NOP();	//125ns
+	NOP();		//125ns
 
 	//Reset Control Lines
 	WR_DIS();	//125ns
 	CS_DIS();
 }
 
-void E2RExt_ReadPage(uint16_t u16Address, uint8_t *u8pData, uint8_t u8Size)
+uint8_t E2RExt_WritePage(T_ADDR tAddr/*, uint8_t *u8pData*/, uint8_t u8Size)
 {
-	for(i = 0; i < u8Size; i++)
-	{
-		u8pData[i]= eeprom_read(u16Address + i);
-		CLRWDT();
-	}
-}
+	uint16_t base = tAddr.value & 0xFFC0;
 
-void E2RExt_WritePage(uint16_t u16Address, uint8_t *u8pData, uint8_t u8Size)
-{
-	uint8_t cDummy;
+	//Set Address
+//	PORTB= tAddr.HB;
 
-	for(i = 0; i < u8Size; i++)
+	//Set Data Bus Direction
+//	DATA_BUS_IO= 0x00;	//125ns
+
+	for(uint8_t offset = tAddr.value & 0x003F; (offset < 0x40) && u8Size--; offset++)
 	{
-		do
-		{
-			if(u8pData[i] != eeprom_read(u16Address + i)) //Si el dato a guardar es = al guardado no graba en eeprom (salva tiempo)
-			{
-				eeprom_write(u16Address + i, u8pData[i]);
-				cDummy++;
-				CLRWDT();
-			}
-		}
-		//Write verify, keep trying 3 times
-		while( (u8pData[i] != eeprom_read(u16Address + i)) &&
-			   (cDummy <= 3) );
-		cDummy= 0;
+		//Set Address
+	//	PORTA= (tAddr.LB & 0xC0) + offset;
+		printf("0x%04X+%02X\r\n",base,offset);
+
+		//Set Data
+	//	PORTD= bytes[offset];
+	
+		//Set Control Lines
+	//	RD_DIS();	//125ns
+	//	CS_ENA();	//125ns
+	//	WR_ENA();	//125ns
+	
+		//tAH (min) 50ns
+		//tWP (min) 100ns
+		//tDS (min) 50ns
+		//Tcy (@32MHz) 125ns
+		NOP();		//125ns
+	
+		//Reset Control Lines
+	//	WR_DIS();	//125ns
 	}
+//	CS_DIS();
+
+	if(u8Size == 0xFF) u8Size = 0;
+	return u8Size;
 }
 
 void E2RExt_ReadString(uint16_t u16Address, uint8_t *str)
