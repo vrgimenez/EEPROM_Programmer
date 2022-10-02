@@ -67,7 +67,7 @@ typedef union {
 typedef union {
 	uint16_t data;
 	struct {
-		unsigned RemisMode		: 1;						//0:TaxiMode, 1:RemisMode
+		unsigned RemisMode		: 1;	//0:TaxiMode, 1:RemisMode
 		unsigned				: 7;
 		unsigned				: 8;
 	};
@@ -77,13 +77,10 @@ typedef union {
 typedef union {
 	uint8_t data;
 	struct {
-	//	unsigned IRSensor		: 1;						//IR Sensor Input
-	//	unsigned IRTrigger		: 1;						//IR Engine Trigger
-	//	unsigned RCTrigger		: 1;						//RC Engine Trigger
-		unsigned STTrigger		: 1;						//ST Engine Trigger
-		unsigned RTCTrigger		: 1;						//RTC Engine Trigger
-		unsigned EXTPulseChk	: 1;						//EXT Pulse Check Trigger
-		unsigned EXTTrigger		: 1;						//EXT Engine Trigger
+		unsigned RTCTrigger		: 1;	//RTC Engine Trigger
+		unsigned E2RTrigger		: 1;	//EEPROM Engine Trigger
+		unsigned E2RWrite		: 1;	//EEPROM Write
+		unsigned E2RCheck		: 1;	//EEPROM Write Verify
 	};
 } T_BIT_FLAGS;
 

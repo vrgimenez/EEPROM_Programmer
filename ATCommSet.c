@@ -15,6 +15,7 @@
 
 /*Includes of local headers-------------------------------------------------------------*/
 #include "NVM_Int.h"
+#include "E2R_ExtParallel.h"
 #include "PIC-EEPROM_PRG.h"
 #include "ATCommSet.h"
 #include "HW_UART.h"
@@ -25,12 +26,15 @@
 #define HDR_SIZE		(4)					//[1ByteLenght]+[2BytesAddress]+[1ByteRecdType]
 #define MAX_HEX_ROW		(HDR_SIZE+32+1)		//[Lenght]+[Address]+[RecdType]+[Data]+[Checksum]
 
-#define	N_AT			(7)
+#define	N_AT			(10)
 const char
 		ATSN[]=		"AT+SN",
 		ATRST[]=	"AT+RST",
 		ATVER[]=	"AT+VER",
 		ATDEV[]=	"AT+DEV",
+		ATE2RWR[]=	"AT+E2RWR",
+		ATE2RRD[]=	"AT+E2RRD",
+		ATE2RCHK[]=	"AT+E2RCHK",
 		ATODOMV[]=	"AT+ODOMV",				//Odometer Value
 		ATHEX[]=	"AT+HEX",				//Read/Write Intel HEX Data Row
 		ATEXIT[]=	"AT+EXIT";				//Exit AT Command Mode
@@ -40,6 +44,9 @@ enum{
 		_ATRST_,
 		_ATVER_,
 		_ATDEV_,
+		_ATE2RWR_,
+		_ATE2RRD_,
+		_ATE2RCHK_,
 		_ATODOMV_,
 		_ATHEX_,
 		_ATEXIT_
@@ -111,6 +118,21 @@ void ATCommandParser(void)
 					cmd= _ATDEV_;
 					step++;
 				}
+				if(ATRecdStr(ATE2RWR,&idx[_ATE2RWR_]) == 1)
+				{
+					cmd= _ATE2RWR_;
+					step++;
+				}
+				if(ATRecdStr(ATE2RRD,&idx[_ATE2RRD_]) == 1)
+				{
+					cmd= _ATE2RRD_;
+					step++;
+				}
+				if(ATRecdStr(ATE2RCHK,&idx[_ATE2RCHK_]) == 1)
+				{
+					cmd= _ATE2RCHK_;
+					step++;
+				}
 				if(ATRecdStr(ATODOMV,&idx[_ATODOMV_]) == 1)
 				{
 					cmd= _ATODOMV_;
@@ -156,6 +178,15 @@ void ATCommandParser(void)
 							break;
 						case _ATDEV_:
 							printf("\r\n+DEV: " LEGAL_COPYRIGHT_STR "\r\n");
+							break;
+						case _ATE2RWR_:
+							printf("\r\n+E2RWR=1 (Writes/Verify de entire ROM range)\r\n");
+							break;
+						case _ATE2RRD_:
+							printf("\r\n+E2RRD=1 (Reads de entire ROM range)\r\n");
+							break;
+						case _ATE2RCHK_:
+							printf("\r\n+E2RCHK=1 (Check de entire ROM range)\r\n");
 							break;
 						case _ATODOMV_:
 						//	printf("\r\n+ODOMV: %lu\r\n",OdometerValue);
@@ -205,6 +236,9 @@ void ATCommandParser(void)
 							}
 							break;
 						case _ATRST_:							//Carga Decimales de hasta 16 bits
+						case _ATE2RWR_:
+						case _ATE2RRD_:
+						case _ATE2RCHK_:
 						case _ATEXIT_:
 							if((ctmp1= ToNumber(c)) != 255)
 							{
@@ -369,6 +403,30 @@ void ATCommandParser(void)
 								RESET();
 							}
 							break;
+						case _ATE2RWR_:
+							if((ctmp2 == 1) && (itmp == 1))
+							{
+								tBitFlags.E2RWrite= 1;
+								tAddress.value= 0;
+								E2RPage= 0;
+								ctmp1= 1;		//OK
+							}
+							break;
+						case _ATE2RRD_:
+							if((ctmp2 == 1) && (itmp == 1))
+							{
+								ctmp1= 1;		//OK
+							}
+							break;
+						case _ATE2RCHK_:
+							if((ctmp2 == 1) && (itmp == 1))
+							{
+								tBitFlags.E2RCheck= 1;
+								tAddress.value= 0;
+								E2RPage= 0;
+								ctmp1= 1;		//OK
+							}
+							break;
 						case _ATODOMV_:
 							if((ctmp2 > 0) && (ctmp2 < 11) && (ltmp < UINT32_MAX))
 							{
@@ -466,6 +524,15 @@ void ATCommandParser(void)
 							break;
 						case _ATRST_:
 							printf("\r\n+RST: (1)\r\n");
+							break;
+						case _ATE2RWR_:
+							printf("\r\n+E2RWR: (1)\r\n");
+							break;
+						case _ATE2RRD_:
+							printf("\r\n+E2RRD: (1)\r\n");
+							break;
+						case _ATE2RCHK_:
+							printf("\r\n+E2RCHK: (1)\r\n");
 							break;
 						case _ATODOMV_:
 							printf("\r\n+ODOMV: (0-4294967295)\r\n");

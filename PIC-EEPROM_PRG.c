@@ -30,7 +30,7 @@ T_BIT_SET	tBitSet;
 T_BIT_FLAGS	tBitFlags;
 T_RTC		tRTC;
 uint8_t		c2ms, c10ms, c100ms, c1000ms;
-uint8_t		data;
+uint8_t		tmp;
 
 /*Functions-------------------------------------------------------------------------------*/
 void main (void)
@@ -43,49 +43,87 @@ void main (void)
 
 	//Initializes External Paged Parallel EEPROM Memory
 	E2RExt_Init();
-	tAddress.value= 125;
-	data= 0;
+
+	tAddress.value= 0;
+	E2RPage= 0;
+	tmp= 0;
 
 	//Infinite Loop
 	while(1)
 	{
+		if(tBitFlags.E2RTrigger)
+		{
+			tBitFlags.E2RTrigger= 0;
+
+			if(tBitFlags.E2RWrite)
+			{
+				switch(tmp)
+				{
+					case 0:
+						printf("Write Page %u with ",E2RPage);
+						printf("%u errors/bytes left\r\n",E2RExt_WritePage(tAddress,&ROM_BEER19_32K[tAddress.value],E2REXT_PAGE_SIZE));
+						tmp++;
+						break;
+					case 1:
+						printf("Check Page %u with ",E2RPage);
+						printf("%u errors/bytes left\r\n",E2RExt_CheckPage(tAddress,&ROM_BEER19_32K[tAddress.value],E2REXT_PAGE_SIZE));
+	
+						if((tAddress.value+= E2REXT_PAGE_SIZE) >= E2REXT_SIZE)
+							tAddress.value= 0;
+	
+						if(++E2RPage >= 512)
+						{
+							printf("EEPROM Write Finished\r\n");
+							tBitFlags.E2RWrite= 0;
+							E2RPage= 0;
+						}
+						tmp--;
+						break;
+				}
+			}
+
+			if(tBitFlags.E2RCheck)
+			{
+				printf("Check Page 0x%03X of 0x1FF\r\n",E2RPage);
+				if(tmp = E2RExt_CheckPage(tAddress,&ROM_BEER19_32K[tAddress.value],E2REXT_PAGE_SIZE)) {
+					printf("Error: 0x%02X\r\nEEPROM Write Verify FAIL!\r\n",tmp);
+					tBitFlags.E2RCheck= 0;
+					E2RPage= 0;
+				}
+
+				if((tAddress.value+= E2REXT_PAGE_SIZE) >= E2REXT_SIZE)
+					tAddress.value= 0;
+
+				if(++E2RPage >= 512)
+				{
+					printf("EEPROM Write Verify OK!\r\n");
+					tBitFlags.E2RCheck= 0;
+					E2RPage= 0;
+				}
+			}
+		}
+
 		if(tBitFlags.RTCTrigger)
 		{
 			tBitFlags.RTCTrigger= 0;
 
-			if(tRTC.Seconds == 5)
-			{
-				printf("%02u\r\n",E2RExt_WritePage(tAddress,&ROM_BEER19_32K[tAddress.value],10));
-			}
+		/*	printf("%04X=R%02X\r\n",tAddress.value,E2RExt_ReadByte(tAddress));
 
-		/*	if(!(tRTC.Seconds % 2))
-			{
-				E2RExt_WriteByte(tAddress,data);
-				printf("%04X=W%02X\r\n",tAddress.value,data);
-
-				//Data Byte Increase Test
-				data++;*/
-
-			/*	//Data Bit Shift Test	
-				data<<=1;
-				if(!data)
-					data= 0x01;	*/
-		/*	}
-			else*/
-		/*	{
-				printf("%04X=R%02X\r\n",tAddress.value,E2RExt_ReadByte(tAddress));
-
-				if(++tAddress.value >= E2REXT_SIZE)
-					tAddress.value= 0;
-			}*/
+			if(++tAddress.value >= E2REXT_SIZE)
+				tAddress.value= 0;*/
 
 		/*	//Data Bus Test
 			DATA_BUS_IO= 0x00;	//Data Bus (Output)
-			PORTD= 0xFF;		//d0:d7=1	*/
+			PORTD= 0xFF;		//d0:d7=1
 
-		/*	//Address Bus Test
+			//Address Bus Test
 			PORTA= 0xFF;	//a0:a7=1
-			PORTB= 0x7F;	//a8:a14=1	*/
+			PORTB= 0xFF;	//a8:a14=1
+
+			//Control Lines Test
+			WR_DIS();
+			CS_DIS();
+			RD_DIS();*/
 
 			if(++tRTC.Seconds == 60)
 			{
@@ -189,6 +227,7 @@ void interrupt ISRs(void)
 				{
 					c100ms= 0;
 
+					tBitFlags.E2RTrigger= 1;
 					LED1_TOGGLE();
 
 					if(++c1000ms >= (1000/100))		//each 1000ms
