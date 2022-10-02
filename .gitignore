@@ -1,0 +1,7 @@
+build/
+DOC/
+ZIP/
+*.mcs
+*.mcw
+*.dep
+*.bat
