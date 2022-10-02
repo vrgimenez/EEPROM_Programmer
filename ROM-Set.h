@@ -1,0 +1,20 @@
+#ifndef _ROMSET_H
+	#define _ROMSET_H
+
+	#define BEER19_32K				1
+	#define KVALLEY_PIPPOLS_32K		2
+
+	#define ROM_SET					KVALLEY_PIPPOLS_32K
+
+	#if (ROM_SET == BEER19_32K)
+		#include "ROMS\ROM-BEER19_32K.h"
+		#define ROM_SET_SIZE	ROM_BEER19_32K_SIZE
+
+	#elif (ROM_SET == KVALLEY_PIPPOLS_32K)
+		#include "ROMS\ROM-KVALLEY_PIPPOLS_32K.h"
+		#define ROM_SET_SIZE	ROM_KVALLEY_PIPPOLS_32K_SIZE
+
+	#else
+		#error ROM SET NOT SUPPORTED
+	#endif
+#endif

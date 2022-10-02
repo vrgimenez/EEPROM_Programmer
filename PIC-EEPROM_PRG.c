@@ -10,7 +10,7 @@
 #include "ATCommSet.h"
 #include "GPIO.h"
 #include "E2R_ExtParallel.h"
-#include "ROM-BEER19_32K.h"
+#include "ROM-Set.h"
 #include "version.h"
 
 /*Type and constant definitions-----------------------------------------------------------*/
@@ -61,12 +61,12 @@ void main (void)
 				{
 					case 0:
 						printf("Write Page %u with ",E2RPage);
-						printf("%u errors/bytes left\r\n",E2RExt_WritePage(tAddress,&ROM_BEER19_32K[tAddress.value],E2REXT_PAGE_SIZE));
+						printf("%u errors/bytes left\r\n",E2RExt_WritePage(tAddress,&ROM_DATA_32K[tAddress.value],E2REXT_PAGE_SIZE));
 						tmp++;
 						break;
 					case 1:
 						printf("Check Page %u with ",E2RPage);
-						printf("%u errors/bytes left\r\n",E2RExt_CheckPage(tAddress,&ROM_BEER19_32K[tAddress.value],E2REXT_PAGE_SIZE));
+						printf("%u errors/bytes left\r\n",E2RExt_CheckPage(tAddress,&ROM_DATA_32K[tAddress.value],E2REXT_PAGE_SIZE));
 	
 						if((tAddress.value+= E2REXT_PAGE_SIZE) >= E2REXT_SIZE)
 							tAddress.value= 0;
@@ -75,6 +75,7 @@ void main (void)
 						{
 							printf("EEPROM Write Finished\r\n");
 							tBitFlags.E2RWrite= 0;
+							tAddress.value= 0;
 							E2RPage= 0;
 						}
 						tmp--;
@@ -85,7 +86,7 @@ void main (void)
 			if(tBitFlags.E2RCheck)
 			{
 				printf("Check Page 0x%03X of 0x1FF\r\n",E2RPage);
-				if(tmp = E2RExt_CheckPage(tAddress,&ROM_BEER19_32K[tAddress.value],E2REXT_PAGE_SIZE)) {
+				if(tmp = E2RExt_CheckPage(tAddress,&ROM_DATA_32K[tAddress.value],E2REXT_PAGE_SIZE)) {
 					printf("Error: 0x%02X\r\nEEPROM Write Verify FAIL!\r\n",tmp);
 					tBitFlags.E2RCheck= 0;
 					E2RPage= 0;
@@ -98,6 +99,7 @@ void main (void)
 				{
 					printf("EEPROM Write Verify OK!\r\n");
 					tBitFlags.E2RCheck= 0;
+					tAddress.value= 0;
 					E2RPage= 0;
 				}
 			}

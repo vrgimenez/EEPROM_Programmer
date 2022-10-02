@@ -10,6 +10,6 @@
 
 #define ROM_BEER19_32K_SIZE (32768UL + 1)
 
-extern const uint8_t ROM_BEER19_32K[];
+extern const uint8_t ROM_DATA_32K[];
 
 #endif	/* _ROM_BEER19_32K_H */
